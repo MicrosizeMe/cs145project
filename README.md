@@ -36,6 +36,7 @@ download.sh is a script for the above.
 
 If you have  7za (yes, i have both wget and 7za on a windows machine shut up), then run:
 ```
+7za e ./data/wdvc16_meta.csv.7z -odata
 7za e ./data/wdvc16_2012_10.xml.7z -odata
 7za e ./data/wdvc16_2012_11.xml.7z -odata
 7za e ./data/wdvc16_2013_01.xml.7z -odata
@@ -57,7 +58,7 @@ If you have  7za (yes, i have both wget and 7za on a windows machine shut up), t
 7za e ./data/wdvc16_2015_09.xml.7z -odata
 7za e ./data/wdvc16_2015_11.xml.7z -odata
 7za e ./data/wdvc16_2016_01.xml.7z -odata
-7za e ./data/wdvc16_meta.csv.7z -odata
+
 ```
 
 If you have linux, [p7zip](http://p7zip.sourceforge.net/) seems to operate similarly. I haven't tested it.
