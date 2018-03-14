@@ -2,35 +2,40 @@ import codecs
 from lxml import etree
 from glob import glob
 from unicodecsv import DictWriter
+from multiprocessing import Pool
 
 def main():
     # Sorted list of all xml file names
     xml_file_list = sorted(glob('./data/wdvc16_*_*.xml') + 
                            glob('./data/validation/wdvc16_*_*.xml') + 
                            glob('./data/test/wdvc16_*_*.xml'))
-    for xml_file in xml_file_list:
-        print 'converting %s to csv' % xml_file
-        # csv file name
-        new_file_path = xml_file.replace('wdvc16', 'converted_wdvc16').replace('.xml', '.csv')
-        print 'writing to %s' % new_file_path
 
-	# page by page generator of the xml file
-        xml_file_by_pages = page_stream_generator(xml_file)
+    p=Pool(4)
+    p.map(parse_file, xml_file_list)
 
-        # columns
-        columns = [u'page_title', u'page_ns', u'page_id',
-                   u'revision_id', u'revision_timestamp', u'revision_comment',
-                   u'revision_model', u'revision_format', u'revision_count',
-                   u'username', u'user_id', u'ip_address']
+def parse_file(filename):
+    print 'converting %s to csv' % xml_file
+    # csv file name
+    new_file_path = xml_file.replace('wdvc16', 'converted_wdvc16').replace('.xml', '.csv')
+    print 'writing to %s' % new_file_path
 
-        with open(new_file_path, 'w') as csv_file:
-            writer = DictWriter(csv_file, fieldnames=columns)
-            writer.writeheader()
+    # page by page generator of the xml file
+    xml_file_by_pages = page_stream_generator(xml_file)
 
-            for xml_page in xml_file_by_pages:
-                revisions_in_page = parse_page(xml_page)
-                for page in revisions_in_page:
-                    writer.writerow(page)
+    # columns
+    columns = [u'page_title', u'page_ns', u'page_id',
+               u'revision_id', u'revision_timestamp', u'revision_comment',
+               u'revision_model', u'revision_format', u'revision_count',
+               u'username', u'user_id', u'ip_address']
+
+    with open(new_file_path, 'w') as csv_file:
+        writer = DictWriter(csv_file, fieldnames=columns)
+        writer.writeheader()
+
+        for xml_page in xml_file_by_pages:
+            revisions_in_page = parse_page(xml_page)
+            for page in revisions_in_page:
+                writer.writerow(page)
 
 # generator that walks through filename and yields each page
 # as a space-separated string
