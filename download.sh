@@ -1,4 +1,6 @@
 mkdir data
+wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_meta.csv.7z
+wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_truth.csv.7z 
 wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2012_10.xml.7z
 wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2012_11.xml.7z
 wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2013_01.xml.7z
@@ -20,4 +22,9 @@ wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/tra
 wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2015_09.xml.7z
 wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2015_11.xml.7z
 wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2016_01.xml.7z
-wget -P ./data/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_meta.csv.7z
+wget -P ./data/test/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2016_05.xml.7z
+wget -P ./data/test/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2016_05_meta.csv.7z
+wget -P ./data/test/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2016_05_truth.csv.7z
+wget -P ./data/validation/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2016_03.xml.7z
+wget -P ./data/validation/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2016_03_meta.csv.7z
+wget -P ./data/validation/ http://www.uni-weimar.de/medien/webis/corpora/corpus-wdvc-16/training/wdvc16_2016_03_truth.csv.7z
