@@ -104,7 +104,7 @@ def create_feather(csv_file):
     csv_df.user_id.fillna(-1, inplace=True)
     csv_df.ip_address.fillna('', inplace=True)
     csv_df.revision_timestamp = pd.to_datetime(df.revision_timestamp)
-    csv_df.user_id = df.user_id.astype('int32')
+    csv_df.user_id = csv_df.user_id.astype('int32')
 
     # add meta strings
     meta_string_column = global_meta_df.meta_string.reindex(csv_df.revision_id)
