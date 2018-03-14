@@ -43,6 +43,7 @@ def main():
     feather_pool.map(create_feather, csv_files)
 
 def process_meta_files(meta_file):
+    print('processing %s' % meta_file)
     df = pd.read_csv(meta_file)
     
     # create frame of sum of null entries in df rows
@@ -78,6 +79,7 @@ def row_to_string(row):
     return ' '.join('%s=%s' % (key, value.replace(' ', '_')) for (key, value) in row_dict.items() if value)
 
 def process_truth_files(truth_file):
+    print('processing %s' % truth_file)
     df = pd.read_csv(truth_file)
     
     # not useful for us
@@ -91,6 +93,7 @@ def process_truth_files(truth_file):
     return df
 
 def create_feather(csv_file):
+    print('creating feather for %s' % csv_file)
     csv_df = pd.read_csv(csv_file)
 
     # these are all 0
