@@ -3,13 +3,7 @@ from glob import glob
 import feather
 from multiprocessing import Pool
 
-# used for creating feathers
-global_meta_df = None
-global_truth_df = None
-
 def main():
-    global global_meta_df
-    global global_truth_df
     meta_pool = Pool(2)
     meta_files = ['./data/wdvc16_meta.csv', './data/validation/wdvc16_2016_03_meta.csv']
 
@@ -24,9 +18,6 @@ def main():
     meta_df.reset_index(inplace=True, drop=True)
     meta_df.set_index('REVISION_ID', inplace=True)
 
-    # set global meta
-    global_meta_df = meta_df
-
     truth_dfs = truth_pool.map(process_truth_files, truth_files)
     truth_pool.close()
 
@@ -35,12 +26,9 @@ def main():
     truth_df.reset_index(inplace=True, drop=True)
     truth_df.set_index('REVISION_ID', inplace=True)
 
-    # set global meta
-    global_truth_df = truth_df
-
-    feather_pool = Pool(6)
     csv_files = sorted(glob('./data/converted_wdvc16_*.csv') + glob('./data/validation/converted_wdvc16_*.csv'))
-    feather_pool.map(create_feather, csv_files)
+    for csv_file in csv_files:
+        create_feather(csv_file, meta_df, truth_df)
 
 def process_meta_files(meta_file):
     print('processing %s' % meta_file)
@@ -50,17 +38,16 @@ def process_meta_files(meta_file):
     null_entry_counts = df.isnull().sum(axis=1)
 
     # drop all entries with 7 null entries (not useful row)
-    df = df[null_entry_counts != 7]
-    df.reset_index(drop=True)
+    df = df[null_entry_counts != 7].reset_index(drop=True)
 
     # cast revision ids to uint32
     df.REVISION_ID = df.REVISION_ID.astype('uint32')
 
-    # remove session ID column - not using this
-    del df['REVISION_SESSION_ID']
-
     # replace na's with empty str
     df.fillna('', inplace=True)
+
+    # remove session ID column - not using this
+    del df['REVISION_SESSION_ID']
 
     # index by revision_id
     df.set_index('REVISION_ID', inplace=True)
@@ -92,12 +79,14 @@ def process_truth_files(truth_file):
     df.REVISION_ID = df.REVISION_ID.astype('uint32')
     return df
 
-def create_feather(csv_file):
+def create_feather(csv_file, meta_df, truth_df):
     print('creating feather for %s' % csv_file)
     csv_df = pd.read_csv(csv_file)
 
-    # these are all 0
+    # these are all uniform
     del csv_df['page_ns']
+    del csv_df['revision_model']
+    del csv_df['revision_format']
 
     csv_df.username.fillna('', inplace=True)
     csv_df.revision_comment.fillna('', inplace=True)
@@ -107,15 +96,12 @@ def create_feather(csv_file):
     csv_df.user_id = csv_df.user_id.astype('int32')
 
     # add meta strings
-    meta_string_column = global_meta_df.meta_string.reindex(csv_df.revision_id)
-    meta_string_column.fillna('')
-    meta_string_column.reset_index(drop=True)
-    csv_df['meta'] = meta_string_column
+    meta_string_column = meta_df.meta_string.loc[csv_df.revision_id].fillna('')
+    csv_df['meta'] = meta_string_column.reset_index(drop=True)
     
     # add labels
-    truth_column = global_truth_df.ROLLBACK_REVERTED.reindex(csv_df.revision_id)
-    truth_column.reset_index(drop=True)
-    csv_df['truth'] = truth_column
+    truth_column = truth_df.ROLLBACK_REVERTED.loc[csv_df.revision_id]
+    csv_df['truth'] = truth_column.reset_index(drop=True)
 
     new_file_path = './data/merged_feathers/' + csv_file[len('./data/converted_'):-4] + '.feather'
     feather.write_dataframe(csv_df, new_file_path)
