@@ -7,8 +7,7 @@ from multiprocessing import Pool
 def main():
     # Sorted list of all xml file names
     xml_file_list = sorted(glob('./data/wdvc16_*_*.xml') + 
-                           glob('./data/validation/wdvc16_*_*.xml') + 
-                           glob('./data/test/wdvc16_*_*.xml'))
+                           glob('./data/validation/wdvc16_*_*.xml'))
 
     p=Pool(4)
     p.map(parse_file, xml_file_list)
