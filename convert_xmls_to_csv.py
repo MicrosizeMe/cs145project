@@ -13,7 +13,7 @@ def main():
     p=Pool(4)
     p.map(parse_file, xml_file_list)
 
-def parse_file(filename):
+def parse_file(xml_file):
     print 'converting %s to csv' % xml_file
     # csv file name
     new_file_path = xml_file.replace('wdvc16', 'converted_wdvc16').replace('.xml', '.csv')
