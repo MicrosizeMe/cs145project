@@ -21,8 +21,8 @@ def main():
 
     # df representing all meta csv's
     meta_df = pd.concat(meta_dfs)
-    meta_df.reset_index(inplace=1, drop=1)
-    meta_df.set_index('REVISION_ID', inplace=1)
+    meta_df.reset_index(inplace=True, drop=True)
+    meta_df.set_index('REVISION_ID', inplace=True)
 
     # set global meta
     global_meta_df = meta_df
@@ -32,8 +32,8 @@ def main():
 
     # df representing all truth csv's
     truth_df = pd.concat(truth_dfs)
-    truth_df.reset_index(inplace=1, drop=1)
-    truth_df.set_index('REVISION_ID', inplace=1)
+    truth_df.reset_index(inplace=True, drop=True)
+    truth_df.set_index('REVISION_ID', inplace=True)
 
     # set global meta
     global_truth_df = truth_df
@@ -99,22 +99,22 @@ def create_feather(csv_file):
     # these are all 0
     del csv_df['page_ns']
 
-    csv_df.username.fillna('', inplace=1)
-    csv_df.revision_comment.fillna('', inplace=1)
-    csv_df.user_id.fillna(-1, inplace=1)
-    csv_df.ip_address.fillna('', inplace=1)
+    csv_df.username.fillna('', inplace=True)
+    csv_df.revision_comment.fillna('', inplace=True)
+    csv_df.user_id.fillna(-1, inplace=True)
+    csv_df.ip_address.fillna('', inplace=True)
     csv_df.revision_timestamp = pd.to_datetime(df.revision_timestamp)
     csv_df.user_id = df.user_id.astype('int32')
 
     # add meta strings
     meta_string_column = global_meta_df.meta_string.reindex(csv_df.revision_id)
     meta_string_column.fillna('')
-    meta_string_column.reset_index(drop=1)
+    meta_string_column.reset_index(drop=True)
     csv_df['meta'] = meta_string_column
     
     # add labels
     truth_column = global_truth_df.ROLLBACK_REVERTED.reindex(csv_df.revision_id)
-    truth_column.reset_index(drop=1)
+    truth_column.reset_index(drop=True)
     csv_df['truth'] = truth_column
 
     new_file_path = './data/merged_feathers/' + csv_file[len('./data/converted_'):-4] + '.feather'
