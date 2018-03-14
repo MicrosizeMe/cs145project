@@ -119,6 +119,7 @@ def create_feather(csv_file):
 
     new_file_path = './data/merged_feathers/' + csv_file[len('./data/converted_'):-4] + '.feather'
     feather.write_dataframe(csv_df, new_file_path)
+    print('%s done' % new_file_path)
 
 if __name__ == '__main__':
     main()
