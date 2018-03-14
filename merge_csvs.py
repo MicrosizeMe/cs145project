@@ -103,7 +103,7 @@ def create_feather(csv_file):
     csv_df.revision_comment.fillna('', inplace=True)
     csv_df.user_id.fillna(-1, inplace=True)
     csv_df.ip_address.fillna('', inplace=True)
-    csv_df.revision_timestamp = pd.to_datetime(df.revision_timestamp)
+    csv_df.revision_timestamp = pd.to_datetime(csv_df.revision_timestamp)
     csv_df.user_id = csv_df.user_id.astype('int32')
 
     # add meta strings
