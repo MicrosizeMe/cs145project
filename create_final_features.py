@@ -14,6 +14,7 @@ def main():
     all_dfs = []
     for feather_file_path in feather_file_paths:
         df = feather.read_dataframe(feather_file_path)
+        print 'read %s' % feather_file_path
         all_dfs.append(df)
 
     # join the dataframes into one
@@ -22,6 +23,8 @@ def main():
 
     # free this memory
     del all_dfs, df
+
+    print 'joined dfs'
 
     # mark rows with their split category
 
@@ -35,6 +38,8 @@ def main():
 
     # test on march16 onwards
     total_df.loc[total_df.revision_timestamp > pd.to_datetime('2016-03-01'), 'fold'] = 2
+
+    print 'split done'
 
     # put user features into df
 
@@ -52,9 +57,13 @@ def main():
     total_df['REVISION_TAGS'] = total_df.meta.str.extract('REVISION_TAGS=([^\s]+)', expand=False).fillna('')
     del total_df['meta']
 
+    print 'user features done'
+
     # put comment features into df
     total_df['revision_comment_category'] = total_df.revision_comment.str.extract('/\*(.+):[0-9]', expand=False).fillna('')
     total_df['revision_comment_property'] = total_df.revision_comment.str.extract('\[\[Property:(.+)\]\]:', expand=False).fillna('')
+
+    print 'comment features done'
 
     # save final feather
     del total_df['page_id']
@@ -63,6 +72,7 @@ def main():
     del total_df['username']
 
     feather.write_dataframe(total_df, './data/final_feathers/total_df.feather')
+    print 'all done'
 
 def mine_sub_ips(ip_address):
     if ip_address is None:
