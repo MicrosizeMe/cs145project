@@ -72,7 +72,7 @@ def mine_sub_ips(ip_address):
         return split_ip[0] + '.' + split_ip[1]
     elif ':' in ip_address:
         split_ip = ip_address.split(':')
-        return split_ip[0] + ':' split_ip[1]
+        return split_ip[0] + ':' + split_ip[1]
 
 if __name__ == '__main__':
     main()
