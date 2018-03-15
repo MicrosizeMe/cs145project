@@ -17,6 +17,8 @@ del train_X['fold']
 del test_X['truth']
 del test_X['fold']
 
+del df
+
 svc = LinearSVC(dual=False,penalty='l1',C=0.5,random_state=1)
 
 print 'starting fit'
