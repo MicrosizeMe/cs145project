@@ -35,7 +35,7 @@ dtrain = xgb.DMatrix(X_train, label=y_train)
 
 print 'creating dtrain pickle'
 with open('./data/final_feathers/xgb_dtrain.bin', 'wb') as f:
-    cPickle.dump(rfc, f)
+    cPickle.dump(dtrain, f)
 
 print 'training'
 param = {'n_jobs': 7}
