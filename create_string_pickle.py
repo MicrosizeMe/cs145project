@@ -18,5 +18,5 @@ str_column = 'user_id=' + df.user_id.astype('str') + ' ' \
 + 'cat=' + df.revision_comment_category + ' ' \
 + 'prop=' + df.revision_comment_property
 
-'saving pickle'
+print 'saving pickle'
 str_column.to_pickle('./data/final_feathers/string_pickle.bin')

@@ -1,35 +1,53 @@
 import feather
 import pandas as pd
-from sklearn.svm import LinearSVC
+import numpy as np
+import scipy.sparse as sp
+from sklearn.feature_extraction.text import HashingVectorizer
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import roc_auc_score
+import cPickle
 
+print 'reading feather'
 df = feather.read_dataframe('./data/final_feathers/total_df.feather')
-print 'read df'
 
-train_y = df[df.fold==0].truth.values
-test_y = df[df.fold==2].truth.values
+print 'reading pickle'
+str_column = pd.read_pickle('./string_pickle.bin')
 
-train_X = df[df.fold==0]
-test_X = df[df.fold==2]
+print 'getting ys'
+y_train = df[df.fold==0].truth.values
+y_test = df[df.fold==2].truth.values
 
-del train_X['truth']
-del train_X['fold']
+vec = HashingVectorizer(dtype=np.uint8, n_features=1000000,
+    norm=None, lowercase=False, binary=True, token_pattern='\S+', 
+    non_negative=True)
 
-del test_X['truth']
-del test_X['fold']
+
+print 'creating Xs'
+X_train = vec.transform(str_column[df.fold==0])
+print 'X_train done'
+X_test = vec.transform(str_column[df.fold==2])
+print 'Xs done'
 
 del df
+del str_column
 
-svc = LinearSVC(dual=False,penalty='l1',C=0.5,random_state=1)
+rfc = RandomForestClassifier(n_jobs=-1, verbose=1)
 
-print 'starting fit'
+print 'fitting rfc'
+rfc.fit(X_train, y_train)
 
-svc.fit(train_X, train_y)
+print 'creating hashvec pickle'
+with open('./models/hashvectorizer.bin', 'wb') as f:
+    cPickle.dump(vec, f)
 
-print 'finished fit'
+print 'creating rfc pickle'
+with open('./models/default_rfc_model.bin', 'wb') as f:
+    cPickle.dump(rfc, f)
 
-print 'starting score'
+print 'predict proba on y_test'
+y_pred = rfc.predict_proba(X_test)
 
-score = svc.score(test_X, test_y)
+print 'getting roc'
+auc = roc_auc_score(y_test, y_pred)
 
-print 'finished score'
-print score
+print auc
