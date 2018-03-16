@@ -3,6 +3,7 @@ import feather
 import pandas as pd
 import numpy as np
 import scipy.sparse as sp
+from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn.metrics import roc_auc_score
 
 print 'reading feather'
