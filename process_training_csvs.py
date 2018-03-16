@@ -5,6 +5,7 @@ import feather
 import bisect
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
+import cPickle
 
 def create_feather(csv_file, meta_df, truth_df):
     print('creating feather for %s' % csv_file)
