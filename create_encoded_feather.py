@@ -24,13 +24,12 @@ label_encoders = {
 print 'encoding attributes'
 for attrib in attributes_to_encode:
     print 'encoding %s' % attrib
-    df[attrib] = label_encoders[attrib].fit_transform(df[attrib])
+    le = label_encoders[attrib]
+    df[attrib] = le.fit_transform(df[attrib])
+    print 'creating pickle'
+    with open('./models/'+attrib+'_label_encoder.bin', 'wb') as f:
+        cPickle.dump(le, f)
     print 'done with %s' % attrib
-
-print 'creating label_encoders pickle'
-for attrib in attributes_to_encode:
-    with open('./models/'+attrib+'label_encoder_params.bin', 'wb') as f:
-        cPickle.dump(label_encoders[attrib].get_params(), f)
 
 print 'creating new df'
 new_df = pd.DataFrame()
