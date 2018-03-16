@@ -37,7 +37,7 @@ with open('./models/default_rfc_model.bin', 'wb') as f:
     cPickle.dump(rfc, f)
 
 print 'predict proba on y_test'
-y_pred = rfc.predict_proba(X_test)
+y_pred = rfc.predict(X_test)
 
 print 'getting roc'
 auc = roc_auc_score(y_test, y_pred)
