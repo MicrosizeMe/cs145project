@@ -27,7 +27,7 @@ print X_train.shape
 
 del df
 
-lvc = LinearSVC(penalty='l1', dual=False, random_state=1)
+lvc = LinearSVC(penalty='l1', dual=False, random_state=1, verbose=2)
 
 print 'fitting lvc'
 lvc.fit(X_train, y_train)
