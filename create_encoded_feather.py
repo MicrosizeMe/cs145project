@@ -18,23 +18,24 @@ attributes_to_encode = [
 ]
 
 label_encoders = {
-	attribute: LabelEncoder() for attribute in attributes_to_encode
+    attribute: LabelEncoder() for attribute in attributes_to_encode
 }
 
 print 'encoding attributes'
 for attrib in attributes_to_encode:
-	print 'encoding %s' % attrib
-	df[attrib] = label_encoders[attrib].fit_transform(df[attrib])
-	print 'done with %s' % attrib
+    print 'encoding %s' % attrib
+    df[attrib] = label_encoders[attrib].fit_transform(df[attrib])
+    print 'done with %s' % attrib
 
 print 'creating label_encoders pickle'
-with open('./models/label_encoders.bin', 'wb') as f:
-    cPickle.dump(label_encoders, f)
+for attrib in attributes_to_encode:
+    with open('./models/'+attrib+'label_encoder_params.bin', 'wb') as f:
+        cPickle.dump(label_encoders[attrib].get_params(), f)
 
 print 'creating new df'
 new_df = pd.DataFrame()
 for attrib in attributes_to_encode:
-	new_df[attrib] = df[attrib]
+    new_df[attrib] = df[attrib]
 new_df['user_id'] = df['user_id']
 new_df['anon'] = df['anon']
 new_df['fold'] = df['fold']
