@@ -36,6 +36,9 @@ with open('./data/final_feathers/X_train.bin', 'wb') as f:
     cPickle.dump(X_train, f)
 '''
 
+X_train = None
+X_test = None
+
 print 'reading X pickles'
 with open('./data/final_feathers/X_train.bin', 'rb') as f:
     X_train = cPickle.load(X_train, f)
