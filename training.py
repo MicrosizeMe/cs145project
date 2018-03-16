@@ -19,8 +19,11 @@ del X_train['fold']
 print 'X_train done'
 X_test = df[df.fold==2].copy()
 del X_test['truth']
-del X_test['train']
+del X_test['fold']
 print 'Xs done'
+
+print y_train.shape
+print X_train.shape
 
 del df
 
