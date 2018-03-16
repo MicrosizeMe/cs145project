@@ -29,7 +29,7 @@ del df
 del str_column
 
 print 'creating DMatrix'
-dtrain = xgb.DMatrix(X_train, label=y_test)
+dtrain = xgb.DMatrix(X_train, label=y_train)
 
 print 'training'
 param = {'n_jobs': 7}
