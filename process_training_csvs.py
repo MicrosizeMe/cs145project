@@ -4,6 +4,7 @@ import pandas as pd
 import feather
 import bisect
 from sklearn.preprocessing import LabelEncoder
+import numpy as np
 
 def create_feather(csv_file, meta_df, truth_df):
     print('creating feather for %s' % csv_file)
@@ -35,7 +36,7 @@ def create_feather(csv_file, meta_df, truth_df):
 
 # xml -> csv done
 # merge csv's
-
+'''
 print 'merging csvs'
 meta_file = './data/test/wdvc16_2016_05_meta.csv'
 truth_file = './data/test/wdvc16_2016_05_truth.csv'
@@ -91,9 +92,10 @@ del total_df['revision_comment']
 del total_df['username']
 
 feather.write_dataframe(total_df, './data/final_feathers/test_df.feather')
+'''
 
 # create encoded feather
-df = total_df
+df = feather.read_dataframe('./data/final_feathers/test_df.feather')
 print 'adding anon feature'
 df['anon'] = np.where(df['user_id']==-1, 1, -1).astype('int8')
 
