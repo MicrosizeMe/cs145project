@@ -119,7 +119,7 @@ for attrib in attributes_to_encode:
 print 'mapping'
 for attrib in attributes_to_encode:
     classes = label_encoders[attrib].classes_
-    df[attrib] = df[attrib].map(lambda s: 'other' if not in classes else s)
+    df[attrib] = df[attrib].map(lambda s: 'other' if s not in classes else s)
 
 print 'encoding attributes'
 for attrib in attributes_to_encode:
