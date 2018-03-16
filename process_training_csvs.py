@@ -1,8 +1,9 @@
 import merge_csvs as mc
-import create_final_features as cff
+from create_final_features import mine_sub_ips
 import pandas as pd
 import feather
-from multiprocessing import Pool
+import bisect
+from sklearn.preprocessing import LabelEncoder
 
 # xml -> csv done
 # merge csv's
@@ -30,8 +31,85 @@ del csv_file
 
 # create final features
 print 'creating final features'
-
 total_df = feather.read_dataframe('./data/merged_feathers/wdvc16_2016_05.feather')
+total_df.reset_index(drop=True, inplace=True)
+
+# ip address prefixes
+total_df['ip_prefix'] = total_df.ip_address.apply(mine_sub_ips).fillna('')
+
+# meta data
+total_df['REVISION_SESSION_ID'] = total_df.meta.str.extract('REVISION_SESSION_ID=([^\s]+)', expand=False).fillna('')
+total_df['USER_COUNTRY_CODE'] = total_df.meta.str.extract('USER_COUNTRY_CODE=([^\s]+)', expand=False).fillna('')
+total_df['USER_CONTINENT_CODE'] = total_df.meta.str.extract('USER_CONTINENT_CODE=([^\s]+)', expand=False).fillna('')
+total_df['USER_TIME_ZONE'] = total_df.meta.str.extract('USER_TIME_ZONE=([^\s]+)', expand=False).fillna('')
+total_df['USER_REGION_CODE'] = total_df.meta.str.extract('USER_REGION_CODE=([^\s]+)', expand=False).fillna('')
+total_df['USER_CITY_NAME'] = total_df.meta.str.extract('USER_CITY_NAME=([^\s]+)', expand=False).fillna('')
+total_df['USER_COUNTY_NAME'] = total_df.meta.str.extract('USER_COUNTY_NAME=([^\s]+)', expand=False).fillna('')
+total_df['REVISION_TAGS'] = total_df.meta.str.extract('REVISION_TAGS=([^\s]+)', expand=False).fillna('')
+del total_df['meta']
+
+print 'user features done'
+
+# put comment features into df
+total_df['revision_comment_category'] = total_df.revision_comment.str.extract('/\*(.+?):[0-9]', expand=False).fillna('')
+total_df['revision_comment_property'] = total_df.revision_comment.str.extract('\[\[Property:(.+?)\]\]:', expand=False).fillna('')
+
+print 'comment features done'
+
+# save final feather
+del total_df['page_id']
+del total_df['revision_timestamp']
+del total_df['revision_comment']
+del total_df['username']
+
+feather.write_dataframe(total_df, './data/final_feathers/test_df.feather')
+
+# create encoded feather
+df = total_df
+print 'adding anon feature'
+df['anon'] = np.where(df['user_id']==-1, 1, -1).astype('int8')
+
+attributes_to_encode = [
+'USER_COUNTY_NAME','USER_COUNTRY_CODE','USER_CONTINENT_CODE',
+'USER_TIME_ZONE','USER_REGION_CODE','USER_CITY_NAME',
+'REVISION_TAGS', 'ip_prefix', 'revision_comment_category', 
+'revision_comment_property'
+]
+
+label_encoders = {}
+for attrib in attributes_to_encode:
+    print 'loading %s encoder' %s attrib
+    with open('./models/'+attrib+'_label_encoder.bin', 'rb') as f:
+        label_encoders[attrib] = cPickle.load(f)
+
+for attrib in attributes_to_encode:
+    le = label_encoders[attrib]
+    classes = le.classes_.tolist()
+    bisect.insort_left(classes, 'other')
+    le.classes_ = classes
+
+print 'mapping'
+for attrib in attributes_to_encode:
+    classes = label_encoders[attrib].classes_
+    df[attrib] = df[attrib].map(lambda s: 'other' if not in classes else s)
+
+print 'encoding attributes'
+for attrib in attributes_to_encode:
+    print 'encoding %s' % attrib
+    le = label_encoders[attrib]
+    df[attrib] = le.transform(df[attrib])
+    print 'done with %s' % attrib
+
+print 'creating new df'
+new_df = pd.DataFrame()
+for attrib in attributes_to_encode:
+    new_df[attrib] = df[attrib]
+new_df['user_id'] = df['user_id']
+new_df['anon'] = df['anon']
+new_df['truth'] = df['truth']
+
+print 'creating df feather'
+feather.write_dataframe(new_df, './data/final_feathers/encoded_test.feather')
 
 def create_feather(csv_file, meta_df, truth_df):
     print('creating feather for %s' % csv_file)
