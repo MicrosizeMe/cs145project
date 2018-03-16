@@ -5,6 +5,34 @@ import feather
 import bisect
 from sklearn.preprocessing import LabelEncoder
 
+def create_feather(csv_file, meta_df, truth_df):
+    print('creating feather for %s' % csv_file)
+    csv_df = pd.read_csv(csv_file)
+
+    # these are all uniform
+    del csv_df['page_ns']
+    del csv_df['revision_model']
+    del csv_df['revision_format']
+
+    csv_df.username.fillna('', inplace=True)
+    csv_df.revision_comment.fillna('', inplace=True)
+    csv_df.user_id.fillna(-1, inplace=True)
+    csv_df.ip_address.fillna('', inplace=True)
+    csv_df.revision_timestamp = pd.to_datetime(csv_df.revision_timestamp)
+    csv_df.user_id = csv_df.user_id.astype('int32')
+
+    # add meta strings
+    meta_string_column = meta_df.meta_string.loc[csv_df.revision_id].fillna('')
+    csv_df['meta'] = meta_string_column.reset_index(drop=True)
+    
+    # add labels
+    truth_column = truth_df.ROLLBACK_REVERTED.loc[csv_df.revision_id]
+    csv_df['truth'] = truth_column.reset_index(drop=True)
+
+    new_file_path = './data/merged_feathers/wdvc16_2016_05.feather'
+    feather.write_dataframe(csv_df, new_file_path)
+    print('%s done' % new_file_path)
+
 # xml -> csv done
 # merge csv's
 
@@ -56,7 +84,7 @@ total_df['revision_comment_property'] = total_df.revision_comment.str.extract('\
 
 print 'comment features done'
 
-# save final feather
+# save feather
 del total_df['page_id']
 del total_df['revision_timestamp']
 del total_df['revision_comment']
@@ -78,7 +106,7 @@ attributes_to_encode = [
 
 label_encoders = {}
 for attrib in attributes_to_encode:
-    print 'loading %s encoder' %s attrib
+    print 'loading %s encoder' % attrib
     with open('./models/'+attrib+'_label_encoder.bin', 'rb') as f:
         label_encoders[attrib] = cPickle.load(f)
 
@@ -110,31 +138,3 @@ new_df['truth'] = df['truth']
 
 print 'creating df feather'
 feather.write_dataframe(new_df, './data/final_feathers/encoded_test.feather')
-
-def create_feather(csv_file, meta_df, truth_df):
-    print('creating feather for %s' % csv_file)
-    csv_df = pd.read_csv(csv_file)
-
-    # these are all uniform
-    del csv_df['page_ns']
-    del csv_df['revision_model']
-    del csv_df['revision_format']
-
-    csv_df.username.fillna('', inplace=True)
-    csv_df.revision_comment.fillna('', inplace=True)
-    csv_df.user_id.fillna(-1, inplace=True)
-    csv_df.ip_address.fillna('', inplace=True)
-    csv_df.revision_timestamp = pd.to_datetime(csv_df.revision_timestamp)
-    csv_df.user_id = csv_df.user_id.astype('int32')
-
-    # add meta strings
-    meta_string_column = meta_df.meta_string.loc[csv_df.revision_id].fillna('')
-    csv_df['meta'] = meta_string_column.reset_index(drop=True)
-    
-    # add labels
-    truth_column = truth_df.ROLLBACK_REVERTED.loc[csv_df.revision_id]
-    csv_df['truth'] = truth_column.reset_index(drop=True)
-
-    new_file_path = './data/merged_feathers/wdvc16_2016_05.feather'
-    feather.write_dataframe(csv_df, new_file_path)
-    print('%s done' % new_file_path)
