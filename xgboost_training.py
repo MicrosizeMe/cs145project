@@ -5,6 +5,7 @@ import numpy as np
 import scipy.sparse as sp
 from sklearn.feature_extraction.text import HashingVectorizer
 from sklearn.metrics import roc_auc_score
+import cPickle
 
 print 'reading feather'
 df = feather.read_dataframe('./data/final_feathers/total_df.feather')
@@ -32,9 +33,13 @@ del str_column
 print 'creating DMatrix'
 dtrain = xgb.DMatrix(X_train, label=y_train)
 
+print 'creating dtrain pickle'
+with open('./final_feathers/xgb_dtrain.bin', 'wb') as f:
+    cPickle.dump(rfc, f)
+
 print 'training'
 param = {'n_jobs': 7}
-bst = xgb.train(param, dtrain, verbost_eval=True)
+bst = xgb.train(param, dtrain, verbose_eval=True)
 
 print 'done training'
 
