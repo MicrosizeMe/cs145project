@@ -19,4 +19,4 @@ str_column = 'user_id=' + df.user_id.astype('str') + ' ' \
 + 'prop=' + df.revision_comment_property
 
 'saving pickle'
-str_column.to_pickle('./string_pickle.bin')
+str_column.to_pickle('./data/final_feathers/string_pickle.bin')
