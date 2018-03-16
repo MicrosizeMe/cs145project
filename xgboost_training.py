@@ -27,15 +27,17 @@ print 'X_train done'
 X_test = vec.transform(str_column[df.fold==2])
 print 'Xs done'
 
+print 'pickling X sets'
+with open('./data/final_feathers/X_test.bin', 'wb') as f:
+    cPickle.dump(X_test, f)
+with open('./data/final_feathers/X_train.bin', 'wb') as f:
+    cPickle.dump(X_train, f)
+
 del df
 del str_column
 
 print 'creating DMatrix'
 dtrain = xgb.DMatrix(X_train, label=y_train)
-
-print 'creating dtrain pickle'
-with open('./data/final_feathers/xgb_dtrain.bin', 'wb') as f:
-    cPickle.dump(dtrain, f)
 
 print 'training'
 param = {'n_jobs': 7}
