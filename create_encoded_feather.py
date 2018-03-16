@@ -12,7 +12,7 @@ df['anon'] = np.where(df['user_id']==-1, 1, -1).astype('int8')
 
 attributes_to_encode = [
 'USER_COUNTY_NAME','USER_COUNTRY_CODE','USER_CONTINENT_CODE',
-'USER_TIME_ZONE','USER_REGION_CODE','USER_CITY_NAME'
+'USER_TIME_ZONE','USER_REGION_CODE','USER_CITY_NAME',
 'REVISION_TAGS', 'ip_prefix', 'revision_comment_category', 
 'revision_comment_property'
 ]
