@@ -11,7 +11,7 @@ print 'reading feather'
 df = feather.read_dataframe('./data/final_feathers/total_df.feather')
 
 print 'reading pickle'
-str_column = pd.read_pickle('./string_pickle.bin')
+str_column = pd.read_pickle('./data/final_feathers/string_pickle.bin')
 
 print 'getting ys'
 y_train = df[df.fold<=1].truth.values
