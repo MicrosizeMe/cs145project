@@ -27,7 +27,7 @@ print X_train.shape
 
 del df
 
-rfc = RandomForestClassifier(n_jobs=7, verbose=2, n_estimators=10, max_depth=15)
+rfc = RandomForestClassifier(n_jobs=7, verbose=2, n_estimators=500, max_depth=20)
 
 print 'fitting rfc'
 rfc.fit(X_train, y_train)
