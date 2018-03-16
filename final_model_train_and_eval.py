@@ -15,13 +15,20 @@ y_test = df_test.truth.values
 
 print 'creating Xs'
 X_train = df
+X_test = df_test
+
+print X_train.shape
+print X_test.shape
+
 del X_train['truth']
 del X_train['fold']
-
-X_test = df_test
 del X_test['truth']
-del X_test['fold']
 print 'Xs done'
+
+print X_train.shape
+print X_test.shape
+print y_train.shape
+print y_test.shape
 
 rfc = RandomForestClassifier(n_jobs=-1, verbose=2, n_estimators=1000, max_depth=100)
 rfc.fit(X_train, y_train)
