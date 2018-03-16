@@ -27,14 +27,22 @@ print X_train.shape
 
 del df
 
-rfc = RandomForestClassifier(n_jobs=7, verbose=2, n_estimators=500, max_depth=20)
+#hyperparameter tuning
+depths = [10, 20, 40, 80, 100, 120, 180, 250]
 
-print 'fitting rfc'
-rfc.fit(X_train, y_train)
+for depth in depths:
+	rfc = RandomForestClassifier(n_jobs=7, verbose=2, n_estimators=20, max_depth=depth)
+	print 'fitting rfc %s' % depth
+	rfc.fit(X_train, y_train)
+	y_pred = rfc.predict(X_test)
+	auc = roc_auc_score(y_test, y_pred)
+	print 'depth=%s auc=%s' % (depth, auc)
 
+'''
 print 'creating rfc pickle'
 with open('./models/default_rfc_model.bin', 'wb') as f:
     cPickle.dump(rfc, f)
+
 
 print 'predict proba on y_test'
 y_pred = rfc.predict(X_test)
@@ -43,3 +51,4 @@ print 'getting roc'
 auc = roc_auc_score(y_test, y_pred)
 
 print auc
+'''

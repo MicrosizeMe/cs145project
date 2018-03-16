@@ -47,6 +47,7 @@ del df
 
 print 'creating DMatrix'
 dtrain = xgb.DMatrix(X_train, label=y_train)
+dtest = xgb.DMatrix(X_test)
 
 print 'training'
 param = {'n_jobs': 7}
@@ -58,7 +59,7 @@ print 'saving model'
 bst.save_model('./models/xgb.model')
 
 print 'predicting y_test'
-y_pred = bst.predict(X_test)
+y_pred = bst.predict(dtest)
 
 print 'getting roc'
 auc = roc_auc_score(y_test, y_pred)
