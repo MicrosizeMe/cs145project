@@ -60,8 +60,8 @@ def main():
     print 'user features done'
 
     # put comment features into df
-    total_df['revision_comment_category'] = total_df.revision_comment.str.extract('/\*(.+):[0-9]', expand=False).fillna('')
-    total_df['revision_comment_property'] = total_df.revision_comment.str.extract('\[\[Property:(.+)\]\]:', expand=False).fillna('')
+    total_df['revision_comment_category'] = total_df.revision_comment.str.extract('/\*(.+?):[0-9]', expand=False).fillna('')
+    total_df['revision_comment_property'] = total_df.revision_comment.str.extract('\[\[Property:(.+?)\]\]:', expand=False).fillna('')
 
     print 'comment features done'
 
