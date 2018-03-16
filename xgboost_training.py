@@ -36,15 +36,11 @@ with open('./data/final_feathers/X_train.bin', 'wb') as f:
     cPickle.dump(X_train, f)
 '''
 
-X_train = None
-X_test = None
-
 print 'reading X pickles'
 with open('./data/final_feathers/X_train.bin', 'rb') as f:
-    X_train = cPickle.load(X_train)
+    X_train = cPickle.load(f)
 with open('./data/final_feathers/X_test.bin', 'rb') as f:
-    X_test = cPickle.load(X_test)
-
+    X_test = cPickle.load(f)
 
 del df
 #del str_column
@@ -62,7 +58,7 @@ print 'saving model'
 bst.save_model('./models/xgb.model')
 
 print 'predicting y_test'
-y_pred = bst.predict(y_test)
+y_pred = bst.predict(X_test)
 
 print 'getting roc'
 auc = roc_auc_score(y_test, y_pred)
