@@ -30,7 +30,7 @@ print X_test.shape
 print y_train.shape
 print y_test.shape
 
-rfc = RandomForestClassifier(n_jobs=-1, verbose=2, n_estimators=1000, max_depth=100)
+rfc = RandomForestClassifier(n_jobs=7, verbose=2, n_estimators=500, max_depth=100)
 rfc.fit(X_train, y_train)
 
 print 'creating rfc pickle'
