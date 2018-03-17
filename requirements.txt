@@ -41,6 +41,7 @@ pathlib2==2.3.0
 pexpect==4.4.0
 pickleshare==0.7.4
 prompt-toolkit==1.0.15
+psutil==5.4.3
 ptyprocess==0.5.2
 pyarrow==0.8.0
 Pygments==2.2.0
@@ -51,6 +52,8 @@ pyzmq==17.0.0
 qtconsole==4.3.1
 requests==2.9.1
 scandir==1.7
+scikit-learn==0.19.1
+scipy==1.0.0
 Send2Trash==1.5.0
 simplegeneric==0.8.1
 singledispatch==3.4.0.3
@@ -59,9 +62,11 @@ subprocess32==3.2.7
 terminado==0.8.1
 testpath==0.3.1
 tornado==5.0
+tqdm==4.19.7
 traitlets==4.3.2
 unicodecsv==0.14.1
 urllib3==1.13.1
 wcwidth==0.1.7
 webencodings==0.5.1
 widgetsnbextension==3.1.4
+xgboost==0.7.post3
