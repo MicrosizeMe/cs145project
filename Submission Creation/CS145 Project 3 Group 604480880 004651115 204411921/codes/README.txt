@@ -1,5 +1,8 @@
 Please have pip and Python 2.7 installed on the machine.
 
+Also, much of the code takes advantage of multi-core processors. It is best to run
+this on a machine that has at least 8 cores.
+
 bash ./run.sh or ./run.sh will start the script which will download all of the data, extract it, and then run it all through the data pipeline and train our final model. The final model will be located at './data/models/final_rfc_model.bin' and can beloaded in Python with the pickle module.
 
 Data is downloaded from http://www.wsdm-cup-2017.org/vandalism-detection.
