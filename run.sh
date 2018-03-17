@@ -6,8 +6,8 @@ mkdir data/merged_feathers/validation
 mkdir data/test
 mkdir data/validation
 
-./download.sh
-./expand.sh
+bash ./download.sh
+bash ./expand.sh
 
 python convert_xmls_to_csv.py
 python merge_csvs.py
