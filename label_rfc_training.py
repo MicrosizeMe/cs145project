@@ -38,17 +38,15 @@ for depth in depths:
 	auc = roc_auc_score(y_test, y_pred)
 	print 'depth=%s auc=%s' % (depth, auc)
 
-'''
 print 'creating rfc pickle'
 with open('./models/default_rfc_model.bin', 'wb') as f:
     cPickle.dump(rfc, f)
 
 
-print 'predict proba on y_test'
+print 'predict on X_test'
 y_pred = rfc.predict(X_test)
 
 print 'getting roc'
 auc = roc_auc_score(y_test, y_pred)
 
 print auc
-'''
