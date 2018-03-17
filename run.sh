@@ -1,5 +1,7 @@
 #!/bin/bash
 
+pip install -r requirements.txt
+
 mkdir data
 mkdir models
 mkdir data/final_feathers
